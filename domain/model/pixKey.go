@@ -20,19 +20,19 @@ type PixKey struct {
 	Base      `valid:"required"`
 	Kind      string   `json:"kind" valid:"notnull"`
 	Key       string   `json:"key" valid:"notnull"`
-	AccountID string   `json:"account_id" valid:"notnull"`
+	AccountID string   `gorm:"column:account_id;type:uuid;not null" valid:"-"`
 	Account   *Account `valid:"-"`
 	Status    string   `json:"status" valid:"notnull"`
 }
 
-func (pixKey *PixKey) isValid() error {
-	_, err := govalidator.ValidateStruct(pixKey)
+func (p *PixKey) isValid() error {
+	_, err := govalidator.ValidateStruct(p)
 
-	if pixKey.Kind != "email" && pixKey.Kind != "cpf" {
+	if p.Kind != "email" && p.Kind != "cpf" {
 		return errors.New("invalid key type")
 	}
 
-	if pixKey.Status != "active" && pixKey.Status != "inactive" {
+	if p.Status != "active" && p.Status != "inactive" {
 		return errors.New("invalid status")
 	}
 
